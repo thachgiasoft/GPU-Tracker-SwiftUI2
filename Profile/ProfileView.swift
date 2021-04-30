@@ -9,12 +9,14 @@ import SwiftUI
 enum ViewPresented {
     case signup, signin
 }
+
 struct ProfileView: View {
     
     @EnvironmentObject var userSession: UserSession
-    
+    @State var isPresentingSignupFlow: Bool = true
+    @State var isPresentingLoginFlow: Bool = true
     var viewPresented: ViewPresented?
-
+    
     var body: some View {
         
         NavigationView {
@@ -33,7 +35,7 @@ struct ProfileView: View {
                         }
                         Spacer().frame(height: 50)
                         NavigationLink(
-                            destination: SignupView()
+                            destination: SignupView(displayNextOne: $isPresentingSignupFlow)
                                 .environmentObject(self.userSession),
                             label: {
                                 ZStack {
@@ -57,7 +59,10 @@ struct ProfileView: View {
                                        
                                 }
                             }
-                        )
+                        ).disabled(!isPresentingSignupFlow)
+                        .onAppear {
+                            isPresentingSignupFlow = true
+                        }
                         NavigationLink(
                             destination: LoginView()
                                 .environmentObject(self.userSession),

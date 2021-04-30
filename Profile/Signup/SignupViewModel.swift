@@ -38,6 +38,23 @@ class SignupViewModel: ObservableObject {
         return isValid
     }
     
+    func sendConfirmationEmail() {
+        errors = []
+        if let user = Auth.auth().currentUser, !user.isEmailVerified {
+            
+            user.sendEmailVerification { [weak self] error in
+                guard let self = self else { return }
+                if let error = error {
+                    self.errors.append(error.localizedDescription)
+                } else {
+                    // no error detectefd
+                    self.canSignUp = true
+                }
+                
+            }
+            
+        }
+    }
     
     func transitionToEmailConfirmation() {
         // create the account
@@ -51,9 +68,9 @@ class SignupViewModel: ObservableObject {
                 // error occured
                 self.errors.append("\(error.localizedDescription)")
             } else {
-                withAnimation {
-                    self.canSignUp = true
-                }
+                
+                self.sendConfirmationEmail()
+                
             }
 
         }

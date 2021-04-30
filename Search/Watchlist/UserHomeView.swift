@@ -108,6 +108,7 @@ struct UserHomeView: View {
             }
             .frame(maxHeight: .infinity)
         }
+        .animation(.spring())
         
         .ignoresSafeArea()
     }

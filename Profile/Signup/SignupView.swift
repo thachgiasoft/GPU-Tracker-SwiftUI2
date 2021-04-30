@@ -10,18 +10,20 @@ import SwiftUI
 struct SignupView: View {
     @EnvironmentObject var userSession: UserSession
     @StateObject var signupViewModel: SignupViewModel = SignupViewModel()
-    
-    @State var email: String = ""
-    @State var password: String = ""
-  
+    @Binding var displayNextOne: Bool
     var body: some View {
         ZStack {
             Color.white
             ZStack {
                 Color.white
                 
-                NavigationLink(destination: NavigationLazyView(EmailConfirmationView().environmentObject(userSession)),
-                                                               isActive: $signupViewModel.canSignUp, label: {})
+                NavigationLink(destination:
+                                NavigationLazyView(EmailConfirmationView(
+                                                    displayNextOne: $displayNextOne)
+                                                    .environmentObject(userSession)),
+                               isActive: $signupViewModel.canSignUp,
+                               label: {})
+                    .disabled(!displayNextOne)
                 
                 
                 
@@ -47,9 +49,12 @@ struct SignupView: View {
                                 .cornerRadius(15)
                                 .shadow(color: Color(#colorLiteral(red: 0.4510196447, green: 0.7518830895, blue: 1, alpha: 0.3878421059)), radius: 20)
                             Button(action: {
-                                userSession.email = email
-                                userSession.password = password
-                                signupViewModel.checkFields()
+                                userSession.email = signupViewModel.emailField
+                                
+                                let fieldsValid = signupViewModel.checkFields()
+                                if fieldsValid == true {
+                                    signupViewModel.transitionToEmailConfirmation()
+                                }
                             }, label: {
                                 CustomButton(text: "Continue")
                             })
@@ -85,8 +90,8 @@ struct SignupView: View {
     }
 }
 
-struct SignupView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignupView()
-    }
-}
+//struct SignupView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SignupView()
+//    }
+//}
