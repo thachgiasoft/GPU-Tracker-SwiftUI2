@@ -10,17 +10,14 @@ import SwiftUI
 struct EmailConfirmationView: View {
     
     var body: some View {
-        ZStack {
+        ZStack { 
             Color.white
             ZStack {
                 Color.white
             
                 ScrollView(showsIndicators: false) {
                     VStack {
-                        Spacer().frame(height: 50)
                         HStack {
-                            Image(systemName: "chevron.left")
-                            Spacer().frame(width: 20)
                             Text("Email sent to bot.developer3@gmail.com")
                             .font(.title3)
                             .fontWeight(.bold)

@@ -13,9 +13,8 @@ struct InputField: View {
         TextField(placeholderText, text: $inputFieldData)
             .font(.system(size: 15))
             .disableAutocorrection(true)
-            .autocapitalization(.words)
+            .autocapitalization(.none)
             .padding(.top, 20)
-        
         Rectangle().frame(height: 1).foregroundColor(Color(#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)))
     }
 }
@@ -35,7 +34,7 @@ struct CustomButton: View {
 struct LoginView: View {
     @State var email: String = ""
     @State var password: String = ""
-    
+    @EnvironmentObject var userSession: UserSession
     var body: some View {
         ZStack {
             Color.white
@@ -44,11 +43,8 @@ struct LoginView: View {
             
                 ScrollView(showsIndicators: false) {
                     VStack {
-                        Spacer().frame(height: 50)
                         HStack {
-                            Image(systemName: "chevron.left")
-                            Spacer().frame(width: 20)
-                            Text("Welcome back!")
+                            Text("Welcome back 🎉!")
                             .font(.title)
                             .fontWeight(.bold)
                             Spacer()
@@ -83,6 +79,10 @@ struct LoginView: View {
                     }
                     .padding(30)
                 }
+            }
+        }.onAppear {
+            withAnimation {
+                userSession.navbarDisplaying = false
             }
         }
     }

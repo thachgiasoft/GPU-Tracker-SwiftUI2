@@ -6,61 +6,99 @@
 //
 
 import SwiftUI
-
+enum ViewPresented {
+    case signup, signin
+}
 struct ProfileView: View {
+    
+    @EnvironmentObject var userSession: UserSession
+    
+    var viewPresented: ViewPresented?
+
     var body: some View {
-        ZStack {
-            Color.white
         
-            ScrollView(showsIndicators: false) {
-                VStack {
-                    
-                    Spacer().frame(height: 50)
-                    HStack {
-                        Text("Profile")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        Spacer()
-                    }
-                    Spacer().frame(height: 50)
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 90)
-                            .foregroundColor(.white)
-                            .animation(.linear)
-                            .shadow(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.1)), radius: 20)
+        NavigationView {
+            ZStack {
+                Color.white
+                
+                ScrollView(showsIndicators: false) {
+                    VStack {
+                        
+                        Spacer().frame(height: 50)
                         HStack {
-                            Text("Sign up")
-                                .fontWeight(.bold)
+                            Text("Create an account or log in")
+                            .font(.title)
+                            .fontWeight(.bold)
                             Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
-                            
                         }
-                        .padding(.horizontal, 20)
+                        Spacer().frame(height: 50)
+                        NavigationLink(
+                            destination: SignupView()
+                                .environmentObject(self.userSession),
+                            label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 90)
+                                        .foregroundColor(.white)
+                                        .animation(.linear)
+                                        .shadow(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.1)), radius: 20)
+                                    
+                                    HStack {
+                                        Text("Sign up")
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.gray)
+                                        
+                                    }
+                                    .padding(.horizontal, 20)
+                                       
+                                }
+                            }
+                        )
+                        NavigationLink(
+                            destination: LoginView()
+                                .environmentObject(self.userSession),
+                            label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 90)
+                                        .foregroundColor(.white)
+                                        .animation(.linear)
+                                        .shadow(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.1)), radius: 20)
+                                    HStack {
+                                        Text("Log In")
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.gray)
+                                               
+                                        
+                                        
+                                    }
+                                    .padding(.horizontal, 20)
+                                }
+                            }
+                        )
                     }
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 90)
-                            .foregroundColor(.white)
-                            .animation(.linear)
-                            .shadow(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.1)), radius: 20)
-                        HStack {
-                            Text("Log In")
-                                .fontWeight(.bold)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
-                            
-                        }
-                        .padding(.horizontal, 20)
-                    }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
             }
+            .onAppear {
+                withAnimation {
+                    userSession.navbarDisplaying = true
+                }
+            }
+            .animation(.spring())
         }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
+        
     }
 }
 

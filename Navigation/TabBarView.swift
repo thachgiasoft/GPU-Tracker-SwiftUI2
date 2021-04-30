@@ -61,7 +61,7 @@ struct TabBarViewIcon: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(currentSelectedPage == pageName ? Color(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)) : Color(#colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)))
-                .frame(width: iconSize, height: iconSize)
+                .frame(width: isSelected ? iconSize+5: iconSize, height: isSelected ? iconSize+5: iconSize)
         })
     }
 }

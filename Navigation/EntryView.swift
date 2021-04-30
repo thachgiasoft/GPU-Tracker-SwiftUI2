@@ -8,22 +8,33 @@
 import SwiftUI
 
 struct EntryView: View {
+    @EnvironmentObject var userSession: UserSession
     @State var currentSelectedPage: currentPage = .home
+    
     var body: some View {
         ZStack {
             switch currentSelectedPage {
                 case .home:
                     UserHomeView()
+                        .environmentObject(self.userSession)
+                        
                 case .search:
                     SearchView()
+                        .environmentObject(self.userSession)
+                        
                 case .profile:
                     ProfileView()
+                        .environmentObject(self.userSession)
+                        
             }
             VStack {
                 Spacer()
-                TabBarView(currentSelectedPage: $currentSelectedPage)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
+                if userSession.navbarDisplaying {
+                    TabBarView(currentSelectedPage: $currentSelectedPage)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .animation(.spring())
+                }
             }
         }
         .background(EmptyView())
