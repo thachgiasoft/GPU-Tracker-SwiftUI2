@@ -13,16 +13,8 @@ final class UserSession: ObservableObject {
     @Published var navbarDisplaying: Bool = true
     @Published var email: String = ""
     @Published var password: String = ""
-    
-    func sendEmailConfirmation() {
-    }
-    
-    func signinAccount() {
-        
-    }
-    func sendPasswordReset() {
-        
-    }
+    @Published var presentProfile: Bool = Auth.auth().currentUser != nil
+    @Published var currentSelectedPage: currentPage = .home
     
     
 }

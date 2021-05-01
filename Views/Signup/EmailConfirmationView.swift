@@ -46,6 +46,8 @@ struct EmailConfirmationView: View {
                                     } else {
                                         if Auth.auth().currentUser?.isEmailVerified == true {
                                             // unwrap navigationview
+                                            
+                                            userSession.presentProfile = true
                                             displayNextOne = false
                                         } else {
                                             withAnimation {

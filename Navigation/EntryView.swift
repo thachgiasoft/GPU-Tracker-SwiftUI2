@@ -9,11 +9,10 @@ import SwiftUI
 
 struct EntryView: View {
     @EnvironmentObject var userSession: UserSession
-    @State var currentSelectedPage: currentPage = .home
     
     var body: some View {
         ZStack {
-            switch currentSelectedPage {
+            switch userSession.currentSelectedPage {
                 case .home:
                     UserHomeView()
                         .environmentObject(self.userSession)
@@ -30,10 +29,11 @@ struct EntryView: View {
             VStack {
                 Spacer()
                 if userSession.navbarDisplaying {
-                    TabBarView(currentSelectedPage: $currentSelectedPage)
+                    TabBarView(currentSelectedPage: $userSession.currentSelectedPage)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .animation(.spring())
+                    
                 }
             }
         }

@@ -82,10 +82,6 @@ struct SignupView: View {
             }
             
             .animation(.spring())
-        }.onAppear {
-            withAnimation {
-                userSession.navbarDisplaying = false   
-            }
         }
     }
 }

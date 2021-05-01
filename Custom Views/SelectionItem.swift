@@ -1,14 +1,38 @@
 //
-//  UserHomeView.swift
+//  SelectionItem.swift
 //  GPU-Tracker-SwiftUI
 //
-//  Created by Pink Flamingo on 4/29/21.
+//  Created by Pink Flamingo on 4/30/21.
 //
 
 import SwiftUI
+func generateItemName(item: GPUItem) -> Text {
 
+    var availabilityText = item.availabilityStatus.rawValue
+    if let price = item.price {
+        availabilityText = "\(availabilityText) - last $\(price)"
+    }
+    
+    switch item.availabilityStatus {
+        case .available:
+            return Text(availabilityText)
+                .font(.caption)
+                .foregroundColor(.green)
+        case .availableScalper:
+            return Text(availabilityText)
+                .font(.caption)
+                .foregroundColor(.yellow)
+        case .unavailable:
+            return Text(availabilityText)
+                .font(.caption)
+                .foregroundColor(.red)
+    }
+    
+}
 struct SelectionItem: View {
-    let imageName = "3090"
+    var item: GPUItem
+    let tolerance: CGFloat = 100
+    @Binding var isPresentingItem: GPUItem?
     @State var isPresentingMoreDataView: Bool = false
     var body: some View {
         ZStack {
@@ -21,11 +45,11 @@ struct SelectionItem: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 90)
                 .foregroundColor(.white)
-                .padding(.trailing, !isPresentingMoreDataView ? 0 : 50)
-                .animation(.linear)
+                .padding(.trailing, !isPresentingMoreDataView ? 0 : tolerance)
+                .animation(.easeIn(duration: 0.2))
             HStack {
                 VStack {
-                    Image("6700xt")
+                    Image(item.imageName)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 140)
@@ -39,20 +63,19 @@ struct SelectionItem: View {
                 VStack {
                     Spacer()
                     HStack {
-                        Text("RTX 2080 ti")
+                        Text(item.itemName)
                             .font(.body)
                             .fontWeight(.bold)
                         Spacer()
                     }
                     HStack {
-                        Text("NVIDIA")
+                        Text(item.brandName)
                             .font(.caption)
                         Spacer()
                     }
+                    
                     HStack {
-                        Text("Available via scalper 💰")
-                            .font(.caption)
-                            .foregroundColor(.yellow)
+                        generateItemName(item: item)
                         Spacer()
                     }
                     Spacer()
@@ -60,15 +83,17 @@ struct SelectionItem: View {
                 }
                 Spacer()
                 Button(action: {
-                    isPresentingMoreDataView.toggle()
+                    self.isPresentingItem = self.item
                     
                 }) {
-                    Image(systemName: !isPresentingMoreDataView ? "plus": "minus")
+                    Image(systemName: "chevron.right")
                         .foregroundColor(.gray)
                         .padding(.trailing, 10)
                 }
-                .padding(.trailing, !isPresentingMoreDataView ? 0 : 50)
-                .animation(.linear)
+                .padding(.trailing, !isPresentingMoreDataView ? 0 : 0)
+                .animation(.linear(duration: 0.2))
+                
+                
                 
             }
             
@@ -80,42 +105,10 @@ struct SelectionItem: View {
         
     }
 }
-struct UserHomeView: View {
-    var body: some View {
-        ZStack {
-            Color.white
-        
-            ScrollView(showsIndicators: false) {
-                VStack {
-                    
-                    Spacer().frame(height: 50)
-                    Text("Watchlist")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    Spacer().frame(height: 50)
-                    SelectionItem()
-                    SelectionItem()
-                    SelectionItem()
-                    SelectionItem()
-                    SelectionItem()
-                    SelectionItem()
-                    SelectionItem()
-                    
-                    
-                }
-                
-                
-            }
-            .frame(maxHeight: .infinity)
-        }
-        .animation(.spring())
-        
-        .ignoresSafeArea()
-    }
-}
 
-struct UserHomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserHomeView()
-    }
-}
+//
+//struct SelectionItem_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectionItem(item: GPUItem(itemName: "3070", imageName: "3070", brandName: "nvidia", availabilityStatus: .available, price: 20))
+//    }
+//}

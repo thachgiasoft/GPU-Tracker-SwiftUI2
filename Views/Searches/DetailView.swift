@@ -7,8 +7,22 @@
 
 import SwiftUI
 import SwiftUICharts
+import FirebaseAuth
+import FirebaseFirestore
 
 struct DetailView: View {
+    @ObservedObject var detailViewModel: DetailViewModel = DetailViewModel()
+    @EnvironmentObject var userSession: UserSession
+    
+    init(displayedItem: GPUItem) {
+        self.setItem(displayedItem: displayedItem)
+    }
+    func setItem(displayedItem: GPUItem) {
+        print(displayedItem)
+        detailViewModel.displayedItem = displayedItem
+        detailViewModel.getCurrentMode()
+        print()
+    }
     var retailers = ["amazon", "adorama", "amd", "antonline", "asus", "bestbuy", "bnh", "newegg", "officedepot", "staples", "walmart", "zotac"]
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -16,8 +30,11 @@ struct DetailView: View {
                 Color.white
                 VStack {
                     HStack {
-                        Image(systemName: "chevron.left")
-                        
+                        Button(action: {
+                            self.detailViewModel.displayedItem = nil
+                        }) {
+                            Image(systemName: "chevron.left")
+                        }
                         Text("Price History")
                             .font(.title)
                             .fontWeight(.bold)
@@ -34,7 +51,7 @@ struct DetailView: View {
                                 Spacer()
                                 HStack {
                                     Spacer()
-                                    Image("3090")
+                                    Image(detailViewModel.displayedItem?.imageName ?? "")
                                         .resizable()
                                         .scaledToFit()
                                         .opacity(0.5)
@@ -61,13 +78,13 @@ struct DetailView: View {
                         Color.white
                         VStack {
                             HStack {
-                                Text("RTX 2080 ti")
+                                Text(detailViewModel.displayedItem?.itemName ?? "")
                                     .font(.title)
                                     .fontWeight(.bold)
                                 Spacer()
                             }
                             HStack {
-                                Text("NVIDIA")
+                                Text(detailViewModel.displayedItem?.brandName ?? "")
                                     .font(.body)
                                 Spacer()
                             }
@@ -80,24 +97,52 @@ struct DetailView: View {
                             }
                             Spacer()
                                 .frame(height: 20)
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 15)
-                                    .foregroundColor(.clear)
-                                    .background(LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.4394139051, green: 0.9035461545, blue: 1, alpha: 1)), Color(#colorLiteral(red: 0.4777215719, green: 0.5102934241, blue: 0.9995983243, alpha: 1))]), startPoint: .leading, endPoint: .trailing))
-                                    .cornerRadius(15)
-                                    .shadow(color: Color(#colorLiteral(red: 0.4510196447, green: 0.7518830895, blue: 1, alpha: 0.3878421059)), radius: 20)
-                                HStack {
-                                    Text("Track GPU")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.white)
+                            if let currentMode = detailViewModel.currentMode {
+                                Button(action: {
+                                    if detailViewModel.currentMode == .addItem {
+                                        detailViewModel.addDisplayedItem()
+                                    } else if detailViewModel.currentMode == .removeItem {
+                                        detailViewModel.removeDisplayedItem()
+                                    }
+                                    self.userSession.currentSelectedPage = .home
+                                    self.detailViewModel.displayedItem = nil
+                                }) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .foregroundColor(.clear)
+                                            .background(LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.4394139051, green: 0.9035461545, blue: 1, alpha: 1)), Color(#colorLiteral(red: 0.4777215719, green: 0.5102934241, blue: 0.9995983243, alpha: 1))]), startPoint: .leading, endPoint: .trailing))
+                                            .cornerRadius(15)
+                                            .shadow(color: Color(#colorLiteral(red: 0.4510196447, green: 0.7518830895, blue: 1, alpha: 0.3878421059)), radius: 20)
+                                        HStack {
+                                            if currentMode == .addItem {
+                                                Text("Track GPU")
+                                                    .fontWeight(.bold)
+                                                    .foregroundColor(.white)
+                                            } else {
+                                                Text("Remove GPU")
+                                                    .fontWeight(.bold)
+                                                    .foregroundColor(.white)
+                                            }
+                                            
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
+                                                .foregroundColor(.white)
+                                        }
+                                        .padding(.horizontal, 20)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 60)
                                 }
-                                .padding(.horizontal, 20)
+                                .onAppear {
+                                    print(currentMode)
+                                    if currentMode == .redirect {
+                                        self.userSession.currentSelectedPage = .profile
+                                        self.detailViewModel.displayedItem = nil
+                                    }
+                                }
+                            } else {
+                                ProgressView()
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 60)
                             Spacer()
                                 .frame(height: 20)
                             
@@ -190,9 +235,9 @@ struct DetailView: View {
         }
     }
 }
-
-struct DetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailView()
-    }
-}
+//
+//struct DetailView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DetailView()
+//    }
+//}

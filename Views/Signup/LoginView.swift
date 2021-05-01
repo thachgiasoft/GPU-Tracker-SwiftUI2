@@ -75,6 +75,7 @@ struct LoginView: View {
                             Button(action: {
                                 loginViewModel.checkFields(completion: { success in
                                     if success {
+                                        userSession.presentProfile = true
                                         self.presentationMode.wrappedValue.dismiss()
                                         
                                     }
@@ -114,10 +115,6 @@ struct LoginView: View {
                     }
                     .padding(30)
                 }
-            }
-        }.onAppear {
-            withAnimation {
-                userSession.navbarDisplaying = false
             }
         }
     }

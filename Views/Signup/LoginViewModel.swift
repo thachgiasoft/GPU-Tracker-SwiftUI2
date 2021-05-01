@@ -13,7 +13,6 @@ class LoginViewModel: ObservableObject {
     @Published var emailField: String = ""
     @Published var passwordField: String = ""
     @Published var errors: [String] = []
-    
     @Published var displayPasswordReset: Bool = false
     
     func checkFields(completion: @escaping(Bool) -> Void) {
